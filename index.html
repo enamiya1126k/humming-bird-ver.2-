@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Hummingbird商品知識クイズ</title>
+
+<script src="TRUE_STATEMENTS.js"></script>
+<script src="FALSE_STATEMENTS.js"></script>
+
+<style>
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
+  background:#f4eee5;
+  margin:0;
+  padding:20px;
+  color:#2b2118;
+}
+.card{
+  background:white;
+  max-width:720px;
+  margin:auto;
+  padding:24px;
+  border-radius:22px;
+  box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+h1{text-align:center;}
+button{
+  width:100%;
+  padding:16px;
+  margin-top:12px;
+  border:none;
+  border-radius:12px;
+  background:#8f7a52;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+}
+input[type="text"]{
+  width:100%;
+  box-sizing:border-box;
+  padding:13px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-size:16px;
+}
+.choice{
+  display:block;
+  padding:14px;
+  margin:10px 0;
+  border:1px solid #ddd;
+  border-radius:12px;
+  background:white;
+  line-height:1.6;
+}
+.correct{background:#dff3e6;border-color:#6fbf8a;}
+.wrong{background:#ffe2dc;border-color:#d66a5b;}
+.explain{
+  background:#f7f1e8;
+  padding:14px;
+  border-radius:14px;
+  margin-top:16px;
+  line-height:1.7;
+}
+.result{
+  font-size:28px;
+  font-weight:bold;
+  text-align:center;
+  margin:20px 0;
+}
+.scoreBox{
+  background:#f7f1e8;
+  padding:14px;
+  border-radius:14px;
+  margin:12px 0;
+}
+.hidden{display:none;}
+.small{
+  color:#7b6a58;
+  font-size:14px;
+  text-align:center;
+}
+.scratchGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.scratchGrid button{
+  height:80px;
+  font-size:30px;
+}
+</style>
+</head>
+
+<body>
+<div class="card">
+
+<div id="startScreen">
+  <h1>Hummingbird<br>商品知識クイズ</h1>
+  <p class="small">20ステージ満点でスクラッチ解放</p>
+
+  <p>スタッフ名</p>
+  <input id="staffName" type="text" placeholder="例：えなみ">
+
+  <button onclick="startQuiz()">クイズ開始</button>
+</div>
+
+<div id="quizScreen" class="hidden">
+  <p class="small">正しい文章をすべて選んでください</p>
+  <h2 id="questionNumber"></h2>
+  <div id="choices"></div>
+  <div id="feedback"></div>
+</div>
+
+<div id="resultScreen" class="hidden">
+  <div class="result">クイズ終了！</div>
+  <p id="scoreText" class="small"></p>
+  <div id="bonusGame"></div>
+  <button onclick="location.reload()">もう一度挑戦</button>
+</div>
+
+</div>
+
+<script>
+const STAGE_COUNT = 20;
+
+let current = 0;
+let score = 0;
+let quiz = [];
+let staffName = "";
+let answered = false;
+
+function shuffle(array){
+  const arr = [...array];
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function sample(array,count){
+  return shuffle(array).slice(0,count);
+}
+
+function startQuiz(){
+  staffName = document.getElementById("staffName").value || "スタッフ";
+
+  if(typeof TRUE_STATEMENTS === "undefined" || typeof FALSE_STATEMENTS === "undefined"){
+    alert("TRUE_STATEMENTS.js または FALSE_STATEMENTS.js が読み込めていません。");
+    return;
+  }
+
+  if(TRUE_STATEMENTS.length < 3 || FALSE_STATEMENTS.length < 3){
+    alert("正解文・不正解文をもう少し追加してください。");
+    return;
+  }
+
+  current = 0;
+  score = 0;
+  quiz = [];
+
+  for(let i = 0; i < STAGE_COUNT; i++){
+    quiz.push(createStage());
+  }
+
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("quizScreen").classList.remove("hidden");
+
+  showQuestion();
+}
+
+function createStage(){
+  const correctCount = Math.floor(Math.random() * 3) + 1;
+  const wrongCount = 4 - correctCount;
+
+  const correctItems = sample(TRUE_STATEMENTS, correctCount).map(item => ({
+    ...item,
+    isCorrect:true
+  }));
+
+  const wrongItems = sample(FALSE_STATEMENTS, wrongCount).map(item => ({
+    ...item,
+    isCorrect:false
+  }));
+
+  return shuffle([...correctItems, ...wrongItems]);
+}
+
+function showQuestion(){
+  answered = false;
+
+  document.getElementById("feedback").innerHTML = "";
+  document.getElementById("questionNumber").innerHTML =
+    `ステージ ${current + 1} / ${STAGE_COUNT}`;
+
+  const area = document.getElementById("choices");
+  area.innerHTML = "";
+
+  quiz[current].forEach((item,index) => {
+    const label = document.createElement("label");
+    label.className = "choice";
+    label.innerHTML = `
+      <input type="checkbox" value="${index}">
+      ${item.text}
+    `;
+    area.appendChild(label);
+  });
+
+  const btn = document.createElement("button");
+  btn.innerText = "回答する";
+  btn.onclick = checkAnswer;
+  area.appendChild(btn);
+}
+
+function checkAnswer(){
+  if(answered) return;
+
+  const selected = [];
+  document.querySelectorAll("input[type=checkbox]:checked").forEach(el => {
+    selected.push(Number(el.value));
+  });
+
+  if(selected.length === 0){
+    alert("最低1つは選んでください");
+    return;
+  }
+
+  answered = true;
+
+  const stage = quiz[current];
+  const correctIndexes = stage
+    .map((item,index) => item.isCorrect ? index : null)
+    .filter(index => index !== null);
+
+  const isCorrect =
+    JSON.stringify([...selected].sort()) ===
+    JSON.stringify([...correctIndexes].sort());
+
+  if(isCorrect) score++;
+
+  document.querySelectorAll(".choice").forEach(label => {
+    const input = label.querySelector("input");
+    const index = Number(input.value);
+    input.disabled = true;
+
+    if(stage[index].isCorrect){
+      label.classList.add("correct");
+    }
+
+    if(selected.includes(index) && !stage[index].isCorrect){
+      label.classList.add("wrong");
+    }
+  });
+
+  let explainHtml = stage.map(item => `
+    <div style="margin-bottom:14px;">
+      <strong>${item.isCorrect ? "✅ 正しい文" : "❌ 間違い文"}</strong><br>
+      ${item.text}<br>
+      <span style="color:#7b6a58;">${item.explanation || "解説はありません。"}</span>
+    </div>
+  `).join("");
+
+  document.getElementById("feedback").innerHTML = `
+    <div class="explain">
+      <strong>${isCorrect ? "正解！" : "不正解！"}</strong>
+      <br><br>
+      ${explainHtml}
+      <button onclick="nextQuestion()">次へ</button>
+    </div>
+  `;
+}
+
+function nextQuestion(){
+  current++;
+  if(current >= STAGE_COUNT){
+    finishQuiz();
+    return;
+  }
+  showQuestion();
+}
+
+function finishQuiz(){
+  document.getElementById("quizScreen").classList.add("hidden");
+  document.getElementById("resultScreen").classList.remove("hidden");
+
+  const percent = Math.round(score / STAGE_COUNT * 100);
+
+  let rank = "🌱 見習いスタッフ";
+  let comment = "まずは解説を読んで復習しよう！";
+
+  if(percent === 100){
+    rank = "👑 神鳥（ゴッドハミングバード）";
+    comment = "20ステージ完全制覇。ジューススクラッチ解放！";
+  }else if(percent >= 90){
+    rank = "🏆 Hummingbirdマスター";
+    comment = "かなり強い。あと少しで完全制覇。";
+  }else if(percent >= 75){
+    rank = "🌿 天然素材ソムリエ";
+    comment = "かなり良い感じ。知識が接客に使えるレベル。";
+  }else if(percent >= 60){
+    rank = "📚 勉強熱心スタッフ";
+    comment = "基礎は見えてる。解説でかなり伸びる。";
+  }else if(percent >= 40){
+    rank = "🚨 商品説明事故予備軍";
+    comment = "その説明、本当に合ってる？復習しよう。";
+  }else{
+    rank = "💀 伝説級";
+    comment = "逆にここまで外す方が難しい。才能を感じる。";
+  }
+
+  document.getElementById("scoreText").innerHTML = `
+    ${staffName}さんの結果<br><br>
+    <strong>${score} / ${STAGE_COUNT} ステージ正解</strong><br>
+    総合得点 ${percent}点<br><br>
+
+    <div style="
+      background:#f7f1e8;
+      padding:18px;
+      border-radius:18px;
+      margin:18px 0;
+      font-size:22px;
+      font-weight:bold;
+      color:#2b2118;
+    ">
+      ${rank}
+    </div>
+
+    <div style="
+      background:#fffaf3;
+      border:1px solid #e0d5c6;
+      padding:14px;
+      border-radius:14px;
+      line-height:1.7;
+      color:#7b6a58;
+    ">
+      ${comment}
+    </div>
+  `;
+
+  if(percent === 100){
+    createBonusGame();
+  }
+}
+
+let scratchOpened = [];
+let scratchCards = [];
+
+function createBonusGame(){
+  scratchOpened = [];
+
+  scratchCards = [
+    "🎯","🎯","🎯","🎯",
+    "😭","😭","😭","😭","😭"
+  ];
+
+  scratchCards = shuffle(scratchCards);
+
+  let html = `
+    <div style="
+      margin-top:20px;
+      background:#fffaf3;
+      border-radius:18px;
+      padding:20px;
+      text-align:center;
+    ">
+      <h2>🏆100点達成ボーナス🏆</h2>
+      <p>9マスから3つ選んでください。<br>3つすべて🎯ならジュース1本おごり券！</p>
+      <div class="scratchGrid">
+  `;
+
+  scratchCards.forEach((card,index) => {
+    html += `
+      <button id="scratch${index}" onclick="openScratch(${index})">
+        ❔
+      </button>
+    `;
+  });
+
+  html += `
+      </div>
+      <p id="scratchResult" class="small"></p>
+    </div>
+  `;
+
+  document.getElementById("bonusGame").innerHTML = html;
+}
+
+function openScratch(index){
+  if(scratchOpened.includes(index)) return;
+  if(scratchOpened.length >= 3) return;
+
+  scratchOpened.push(index);
+
+  document.getElementById(`scratch${index}`).innerHTML =
+    scratchCards[index];
+
+  if(scratchOpened.length === 3){
+    finishScratch();
+  }
+}
+
+function finishScratch(){
+  const results = scratchOpened.map(index => scratchCards[index]);
+  const win = results.every(card => card === "🎯");
+
+  document.querySelectorAll(".scratchGrid button").forEach(btn => {
+    btn.disabled = true;
+  });
+
+  document.getElementById("scratchResult").innerHTML = win
+    ? "🎉 当たり！ジュース1本おごり券獲得！"
+    : "😭 はずれ！また満点を狙ってね！";
+}
+</script>
+
+</body>
+</html>
