@@ -192,9 +192,20 @@ function showQuestion(){
   answered = false;
 
   document.getElementById("feedback").innerHTML = "";
-  document.getElementById("questionNumber").innerHTML =
-    `ステージ ${current + 1} / ${STAGE_COUNT}`;
+  
+  const wrongCount = current - score;
 
+document.getElementById("questionNumber").innerHTML = `
+  ステージ ${current + 1} / ${STAGE_COUNT}<br>
+  <span style="
+    font-size:16px;
+    color:#7b6a58;
+    font-weight:normal;
+  ">
+    ✅ ${score}問正解　❌ ${wrongCount}問不正解
+  </span>
+`;
+  
   const area = document.getElementById("choices");
   area.innerHTML = "";
 
@@ -351,7 +362,7 @@ function createBonusGame(){
   scratchOpened = [];
 
   scratchCards = [
-    "🎯","🎯","🎯","🎯",
+    "⭐","⭐","⭐","⭐",
     "😭","😭","😭","😭","😭"
   ];
 
@@ -366,7 +377,19 @@ function createBonusGame(){
       text-align:center;
     ">
       <h2>🏆100点達成ボーナス🏆</h2>
-      <p>9マスから3つ選んでください。<br>3つすべて🎯ならジュース1本おごり券！</p>
+
+      <p>
+        9マスから4つ選んでください！<br>
+        ⭐4つ：🥤500円以内ジュース<br>
+        ⭐3つ：🍫150円以内お菓子<br>
+        ⭐2つ：🍬飴1つ<br>
+        ⭐1つ以下：😭残念
+      </p>
+
+      <p id="scratchCount" class="small">
+        選択中：0 / 4
+      </p>
+
       <div class="scratchGrid">
   `;
 
@@ -389,29 +412,69 @@ function createBonusGame(){
 
 function openScratch(index){
   if(scratchOpened.includes(index)) return;
-  if(scratchOpened.length >= 3) return;
+  if(scratchOpened.length >= 4) return;
 
   scratchOpened.push(index);
 
   document.getElementById(`scratch${index}`).innerHTML =
     scratchCards[index];
 
-  if(scratchOpened.length === 3){
+  const starCount = scratchOpened
+    .map(i => scratchCards[i])
+    .filter(card => card === "⭐").length;
+
+  document.getElementById("scratchCount").innerHTML =
+    `選択中：${scratchOpened.length} / 4　⭐ ${starCount}個`;
+
+  if(scratchOpened.length === 4){
     finishScratch();
   }
 }
 
 function finishScratch(){
-  const results = scratchOpened.map(index => scratchCards[index]);
-  const win = results.every(card => card === "🎯");
+  const starCount = scratchOpened
+    .map(index => scratchCards[index])
+    .filter(card => card === "⭐").length;
 
-  document.querySelectorAll(".scratchGrid button").forEach(btn => {
-    btn.disabled = true;
-  });
+  document.getElementById("scratchResult").innerHTML =
+    "✨結果発表中…✨";
 
-  document.getElementById("scratchResult").innerHTML = win
-    ? "🎉 当たり！ジュース1本おごり券獲得！"
-    : "😭 はずれ！また満点を狙ってね！";
+  setTimeout(() => {
+    scratchCards.forEach((card,index) => {
+      const btn = document.getElementById(`scratch${index}`);
+      btn.innerHTML = card;
+
+      if(!scratchOpened.includes(index)){
+        btn.style.opacity = "0.45";
+      }
+
+      btn.disabled = true;
+    });
+
+    let resultText = "";
+
+    if(starCount === 4){
+      resultText = "🎉大当たり！🥤500円以内のジュース1本GET！！";
+    }else if(starCount === 3){
+      resultText = "🎊当たり！🍫150円以内のお菓子1つGET！！";
+    }else if(starCount === 2){
+      resultText = "🍬飴1つGET！！";
+    }else{
+      resultText = "😭残念！また100点を狙ってね！";
+    }
+
+    document.getElementById("scratchResult").innerHTML = `
+      <strong style="font-size:20px;">
+        ⭐ ${starCount}個
+      </strong>
+      <br><br>
+      ${resultText}
+      <br><br>
+      <span style="color:#7b6a58;">
+        ※薄く表示されているマスが、選ばなかった場所です。
+      </span>
+    `;
+  }, 600);
 }
 </script>
 
