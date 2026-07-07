@@ -542,25 +542,63 @@ if(gameOver){
 
 }
 
-  document.getElementById("scoreText").innerHTML = `
-    ${staffName}さんの結果<br><br>
-<strong>${score} / ${STAGE_COUNT} ステージ正解</strong><br>
-🏁到達ステージ：${reachedStage} / ${STAGE_COUNT}<br>
-総合得点 ${percent}点<br>
-    💡ヒント使用：${hintUseCount} / ${MAX_HINT_COUNT}回<br>
-❤️LIFE：${life} / ${MAX_LIFE}<br>
-🎁スクラッチ追加⭐：${bonusScratchExtraStar}個<br><br>
+document.getElementById("scoreText").innerHTML = `
+  ${staffName}さんの結果<br><br>
 
-    <div style="background:#f7f1e8;padding:18px;border-radius:18px;margin:18px 0;font-size:22px;font-weight:bold;color:#2b2118;">
+  <div style="
+    background:#fffaf3;
+    border:1px solid #e0d5c6;
+    padding:18px;
+    border-radius:18px;
+    line-height:1.9;
+    font-size:18px;
+    color:#2b2118;
+  ">
+
+    <div style="font-size:16px;color:#7b6a58;">🏁 到達ステージ</div>
+    <strong style="font-size:28px;">${reachedStage} / ${STAGE_COUNT}</strong><br><br>
+
+    <div style="font-size:16px;color:#7b6a58;">❤️ 残りLIFE</div>
+    <strong style="font-size:28px;color:#d9534f;">${life} / ${MAX_LIFE}</strong><br><br>
+
+    <div style="font-size:16px;color:#7b6a58;">🏅 到達ランク</div>
+    <div style="
+      background:#f7f1e8;
+      padding:16px;
+      border-radius:16px;
+      margin:10px 0 18px;
+      font-size:24px;
+      font-weight:bold;
+    ">
       ${rank}
     </div>
 
-    <div style="background:#fffaf3;border:1px solid #e0d5c6;padding:14px;border-radius:14px;line-height:1.7;color:#7b6a58;">
-      ${comment}
-    </div>
-  `;
+    <div style="
+      border-top:1px dashed #d8cbb8;
+      margin:18px 0;
+    "></div>
 
-if(life >= 2){
+    正解数：<strong>${score} / ${STAGE_COUNT}</strong><br>
+    総合得点：<strong>${percent}点</strong><br>
+    ヒント：<strong>${hintUseCount} / ${MAX_HINT_COUNT}回</strong><br>
+    🎁スクラッチ追加⭐：<strong>${bonusScratchExtraStar}個</strong>
+
+  </div>
+
+  <div style="
+    background:#fffaf3;
+    border:1px solid #e0d5c6;
+    padding:14px;
+    border-radius:14px;
+    line-height:1.7;
+    color:#7b6a58;
+    margin-top:18px;
+  ">
+    ${comment}
+  </div>
+`;
+
+if(!gameOver && life >= 2){
     createBonusGame();
 }else{
     document.getElementById("bonusGame").innerHTML = `
