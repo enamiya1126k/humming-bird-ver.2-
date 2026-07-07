@@ -93,6 +93,7 @@ let answered = false;
 let hintAvailable = true;
 let hintUseCount = 0;
 let life = MAX_LIFE;
+let gameOver = false;
 let hintUsedThisStage = false;
 
 function shuffle(array){
@@ -127,6 +128,7 @@ function startQuiz(){
   hintAvailable = true;
   hintUseCount = 0;
   life = MAX_LIFE;
+gameOver = false;
 
   for(let i = 0; i < STAGE_COUNT; i++){
     quiz.push(createStage());
@@ -310,11 +312,21 @@ if(isCorrect){
   life -= 2;
   if(life < 0) life = 0;
 
-  damageText = `
-    <div style="color:#d9534f;font-size:20px;font-weight:bold;margin:12px 0;">
-      💥 ボーナスライフ -⭐⭐
-    </div>
-  `;
+  if(life <= 0){
+    gameOver = true;
+    damageText = `
+      <div style="color:#d9534f;font-size:20px;font-weight:bold;margin:12px 0;">
+        💥 ボーナスライフ -⭐⭐<br>
+        💀 ライフがなくなりました！
+      </div>
+    `;
+  }else{
+    damageText = `
+      <div style="color:#d9534f;font-size:20px;font-weight:bold;margin:12px 0;">
+        💥 ボーナスライフ -⭐⭐
+      </div>
+    `;
+  }
 }
 
   updateQuestionHeader();
@@ -350,21 +362,55 @@ if(isCorrect){
       ${damageText}
       <br>
       ${explainHtml}
-      <button onclick="nextQuestion()">次へ</button>
+<button onclick="nextQuestion()">
+  ${gameOver ? "結果を見る" : "次へ"}
+</button>
     </div>
   `;
 }
 
+function luckyBonus(){
+  if(current % 5 !== 0) return;
+  if(current >= STAGE_COUNT) return;
+  if(gameOver) return;
+
+  const isLucky = Math.random() < 0.5;
+
+  if(isLucky){
+    const beforeLife = life;
+    life += 2;
+    if(life > MAX_LIFE) life = MAX_LIFE;
+
+    const recovered = life - beforeLife;
+
+    alert(
+      recovered > 0
+        ? `🎁 Lucky Bonus！\n⭐⭐ ${recovered}個回復！`
+        : `🎁 Lucky Bonus！\nすでにライフ満タン！`
+    );
+  }else{
+    alert("🎁 Lucky Bonus！\n今回は回復なし…！");
+  }
+}
+
 function nextQuestion(){
+
+  if(gameOver){
+    finishQuiz();
+    return;
+  }
+
+  // ステージ5・10・15・20終了時にLuckyBonus
+  if((current + 1) % HINT_INTERVAL === 0 && current + 1 < STAGE_COUNT){
+    hintAvailable = true;
+    luckyBonus();
+  }
+
   current++;
 
   if(current >= STAGE_COUNT){
     finishQuiz();
     return;
-  }
-
-  if(current % HINT_INTERVAL === 0){
-    hintAvailable = true;
   }
 
   showQuestion();
