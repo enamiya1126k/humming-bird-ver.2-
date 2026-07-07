@@ -3,90 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>Hummingbird商品知識クイズ</title>
 
 <script src="TRUE_STATEMENTS.js"></script>
 <script src="FALSE_STATEMENTS.js"></script>
 
 <style>
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
-  background:#f4eee5;
-  margin:0;
-  padding:20px;
-  color:#2b2118;
-}
-.card{
-  background:white;
-  max-width:720px;
-  margin:auto;
-  padding:24px;
-  border-radius:22px;
-  box-shadow:0 5px 20px rgba(0,0,0,.08);
-}
+body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;background:#f4eee5;margin:0;padding:20px;color:#2b2118;}
+.card{background:white;max-width:720px;margin:auto;padding:24px;border-radius:22px;box-shadow:0 5px 20px rgba(0,0,0,.08);}
 h1{text-align:center;}
-button{
-  width:100%;
-  padding:16px;
-  margin-top:12px;
-  border:none;
-  border-radius:12px;
-  background:#8f7a52;
-  color:white;
-  font-size:18px;
-  font-weight:bold;
-}
-button:disabled{
-  background:#c7bda8;
-}
-input[type="text"]{
-  width:100%;
-  box-sizing:border-box;
-  padding:13px;
-  border-radius:10px;
-  border:1px solid #ddd;
-  font-size:16px;
-}
-.choice{
-  display:block;
-  padding:14px;
-  margin:10px 0;
-  border:1px solid #ddd;
-  border-radius:12px;
-  background:white;
-  line-height:1.6;
-}
+button{width:100%;padding:16px;margin-top:12px;border:none;border-radius:12px;background:#8f7a52;color:white;font-size:18px;font-weight:bold;}
+button:disabled{background:#c7bda8;}
+input[type="text"]{width:100%;box-sizing:border-box;padding:13px;border-radius:10px;border:1px solid #ddd;font-size:16px;}
+.choice{display:block;padding:14px;margin:10px 0;border:1px solid #ddd;border-radius:12px;background:white;line-height:1.6;}
 .correct{background:#dff3e6;border-color:#6fbf8a;}
 .wrong{background:#ffe2dc;border-color:#d66a5b;}
-.explain{
-  background:#f7f1e8;
-  padding:14px;
-  border-radius:14px;
-  margin-top:16px;
-  line-height:1.7;
-}
-.result{
-  font-size:28px;
-  font-weight:bold;
-  text-align:center;
-  margin:20px 0;
-}
+.explain{background:#f7f1e8;padding:14px;border-radius:14px;margin-top:16px;line-height:1.7;}
+.result{font-size:28px;font-weight:bold;text-align:center;margin:20px 0;}
 .hidden{display:none;}
-.small{
-  color:#7b6a58;
-  font-size:14px;
-  text-align:center;
-}
-.scratchGrid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-}
-.scratchGrid button{
-  height:80px;
-  font-size:30px;
-}
+.small{color:#7b6a58;font-size:14px;text-align:center;}
+.scratchGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.scratchGrid button{height:80px;font-size:30px;}
 </style>
 </head>
 
@@ -95,36 +32,33 @@ input[type="text"]{
 
 <div id="startScreen">
   <h1>Hummingbird<br>商品知識クイズ</h1>
-  <div style="
-background:#fffaf3;
-border:2px solid #e8d8bf;
-border-radius:18px;
-padding:16px;
-margin:18px 0;
-line-height:1.8;
-text-align:left;
-font-size:15px;
-">
 
-<b>🎮 ゲームルール</b><br><br>
+  <div style="background:#fffaf3;border:2px solid #e8d8bf;border-radius:18px;padding:16px;margin:18px 0;line-height:1.8;text-align:left;font-size:15px;">
+    <b>🎮 ゲームルール</b><br><br>
+    ✅ 全20ステージに挑戦！<br>
+    ✅ 正しい文章をすべて選んでください。<br><br>
 
-✅ 全20ステージに挑戦！<br>
-✅ 100点達成でボーナススクラッチ解放！<br><br>
+    ⭐ <b>ボーナスライフ</b><br>
+    最初は ⭐⭐⭐⭐⭐⭐⭐⭐ からスタート！<br><br>
 
-💡 <b>救済ヒント</b><br>
-・5ステージごとに1回使用できます（最大4回）<br>
-・不正解の選択肢を1つ消します。<br><br>
+    ❌ 不正解<br>
+    → ⭐⭐ 2個減少<br><br>
 
-⭐ <b>ヒントを使わないほどスクラッチが有利！</b><br>
-ヒント未使用1回につき、あたり⭐が1つ増えます！<br><br>
+    💡 ヒント使用<br>
+    → ⭐ 1個減少<br><br>
 
-🏆 目指せ100点＆ヒント温存！
+    ⭐が2個以上残れば<br>
+    ボーナススクラッチ挑戦！<br><br>
 
-</div>
+    💡 <b>救済ヒント</b><br>
+    ・5ステージごとに1回使用できます。<br>
+    ・不正解の選択肢を1つ消します。<br><br>
+
+    🏆 ライフを残してゴールを目指そう！
+  </div>
 
   <p>スタッフ名</p>
   <input id="staffName" type="text" placeholder="例：えなみ">
-
   <button onclick="startQuiz()">クイズ開始</button>
 </div>
 
@@ -148,7 +82,7 @@ font-size:15px;
 const STAGE_COUNT = 20;
 const HINT_INTERVAL = 5;
 const MAX_HINT_COUNT = STAGE_COUNT / HINT_INTERVAL;
-
+const MAX_LIFE = 8;
 
 let current = 0;
 let score = 0;
@@ -158,6 +92,7 @@ let answered = false;
 
 let hintAvailable = true;
 let hintUseCount = 0;
+let life = MAX_LIFE;
 
 function shuffle(array){
   const arr = [...array];
@@ -185,11 +120,12 @@ function startQuiz(){
     return;
   }
 
-current = 0;
-score = 0;
-quiz = [];
-hintAvailable = true;
-hintUseCount = 0;
+  current = 0;
+  score = 0;
+  quiz = [];
+  hintAvailable = true;
+  hintUseCount = 0;
+  life = MAX_LIFE;
 
   for(let i = 0; i < STAGE_COUNT; i++){
     quiz.push(createStage());
@@ -197,7 +133,6 @@ hintUseCount = 0;
 
   document.getElementById("startScreen").classList.add("hidden");
   document.getElementById("quizScreen").classList.remove("hidden");
-
   showQuestion();
 }
 
@@ -220,21 +155,23 @@ function createStage(){
 
 function updateQuestionHeader(){
   const wrongCount = current - score;
+  const starText = "⭐".repeat(life) + "☆".repeat(MAX_LIFE - life);
   const hintBlockStart = Math.floor(current / HINT_INTERVAL) * HINT_INTERVAL + 1;
   const hintBlockEnd = Math.min(hintBlockStart + HINT_INTERVAL - 1, STAGE_COUNT);
 
   document.getElementById("questionNumber").innerHTML = `
     ステージ ${current + 1} / ${STAGE_COUNT}<br>
-    <span style="
-      font-size:16px;
-      color:#7b6a58;
-      font-weight:normal;
-    ">
+
+    <span style="font-size:22px;color:#d4a000;">
+      ${starText}
+    </span><br>
+
+    <span style="font-size:16px;color:#7b6a58;font-weight:normal;">
       ✅ ${score}問正解　❌ ${wrongCount}問不正解
     </span><br>
+
     <span style="font-size:15px;color:#8f7a52;font-weight:normal;">
-      💡ヒント：${hintAvailable ? "使用可能" : "使用済み"}
-      <br>
+      💡ヒント：${hintAvailable ? "使用可能" : "使用済み"}<br>
       <span style="font-size:13px;">
         対象ステージ：${hintBlockStart}〜${hintBlockEnd}
       </span>
@@ -244,7 +181,6 @@ function updateQuestionHeader(){
 
 function showQuestion(){
   answered = false;
-
   document.getElementById("feedback").innerHTML = "";
   updateQuestionHeader();
 
@@ -303,6 +239,9 @@ function useHint(){
 
   hintAvailable = false;
   hintUseCount++;
+  life--;
+
+  if(life < 0) life = 0;
 
   const hintBtn = document.getElementById("hintButton");
   if(hintBtn){
@@ -315,7 +254,8 @@ function useHint(){
   document.getElementById("feedback").innerHTML = `
     <div class="explain">
       💡救済ヒント発動！<br>
-      不正解の選択肢を1つ消しました。
+      不正解の選択肢を1つ消しました。<br><br>
+      <strong style="color:#d9534f;">ボーナスライフ -⭐</strong>
     </div>
   `;
 }
@@ -344,7 +284,18 @@ function checkAnswer(){
     JSON.stringify([...selected].sort()) ===
     JSON.stringify([...correctIndexes].sort());
 
-  if(isCorrect) score++;
+  let damageText = "";
+
+  if(isCorrect){
+    score++;
+    damageText = `<div style="color:#3c8c5a;font-size:18px;font-weight:bold;margin:12px 0;">🎉 ボーナスライフ減少なし！</div>`;
+  }else{
+    life -= 2;
+    if(life < 0) life = 0;
+    damageText = `<div style="color:#d9534f;font-size:20px;font-weight:bold;margin:12px 0;">💥 ボーナスライフ -⭐⭐</div>`;
+  }
+
+  updateQuestionHeader();
 
   document.querySelectorAll(".choice").forEach(label => {
     const input = label.querySelector("input");
@@ -374,7 +325,8 @@ function checkAnswer(){
   document.getElementById("feedback").innerHTML = `
     <div class="explain">
       <strong>${isCorrect ? "正解！" : "不正解！"}</strong>
-      <br><br>
+      ${damageText}
+      <br>
       ${explainHtml}
       <button onclick="nextQuestion()">次へ</button>
     </div>
@@ -407,7 +359,7 @@ function finishQuiz(){
 
   if(percent === 100){
     rank = "👑 神鳥（ゴッドハミングバード）";
-    comment = "20ステージ完全制覇。ジューススクラッチ解放！";
+    comment = "20ステージ完全制覇。文句なしの神鳥。";
   }else if(percent >= 90){
     rank = "🏆 Hummingbirdマスター";
     comment = "かなり強い。あと少しで完全制覇。";
@@ -427,38 +379,39 @@ function finishQuiz(){
 
   document.getElementById("scoreText").innerHTML = `
     ${staffName}さんの結果<br><br>
-<strong>${score} / ${STAGE_COUNT} ステージ正解</strong><br>
-総合得点 ${percent}点<br>
-💡ヒント使用：${hintUseCount} / ${MAX_HINT_COUNT}回<br>
-⭐未使用ヒント：${MAX_HINT_COUNT - hintUseCount}回<br><br>
+    <strong>${score} / ${STAGE_COUNT} ステージ正解</strong><br>
+    総合得点 ${percent}点<br>
+    💡ヒント使用：${hintUseCount} / ${MAX_HINT_COUNT}回<br>
+    ⭐ボーナスライフ：${life} / ${MAX_LIFE}<br><br>
 
-    <div style="
-      background:#f7f1e8;
-      padding:18px;
-      border-radius:18px;
-      margin:18px 0;
-      font-size:22px;
-      font-weight:bold;
-      color:#2b2118;
-    ">
+    <div style="background:#f7f1e8;padding:18px;border-radius:18px;margin:18px 0;font-size:22px;font-weight:bold;color:#2b2118;">
       ${rank}
     </div>
 
-    <div style="
-      background:#fffaf3;
-      border:1px solid #e0d5c6;
-      padding:14px;
-      border-radius:14px;
-      line-height:1.7;
-      color:#7b6a58;
-    ">
+    <div style="background:#fffaf3;border:1px solid #e0d5c6;padding:14px;border-radius:14px;line-height:1.7;color:#7b6a58;">
       ${comment}
     </div>
   `;
 
-  if(percent === 100){
+if(life >= 2){
     createBonusGame();
-  }
+}else{
+    document.getElementById("bonusGame").innerHTML = `
+    <div style="
+        background:#fff4f4;
+        border-radius:16px;
+        padding:20px;
+        margin-top:20px;
+        text-align:center;
+    ">
+        <h2>😭 ボーナス挑戦失敗</h2>
+        <p>
+            ⭐ボーナスライフが2個以上残っていないため、
+            ボーナススクラッチに挑戦できませんでした。
+        </p>
+    </div>
+    `;
+}
 }
 
 let scratchOpened = [];
@@ -467,26 +420,24 @@ let scratchCards = [];
 function createBonusGame(){
   scratchOpened = [];
 
-const unusedHintCount = MAX_HINT_COUNT - hintUseCount;
-const starTotal = Math.min(8, 4 + unusedHintCount);
-const cryTotal = 9 - starTotal;
+  const starTotal = life;
+  const cryTotal = 9 - life;
 
-scratchCards = [
-  ...Array(starTotal).fill("⭐"),
-  ...Array(cryTotal).fill("😭")
-];
+  scratchCards = [
+    ...Array(starTotal).fill("⭐"),
+    ...Array(cryTotal).fill("😭")
+  ];
 
   scratchCards = shuffle(scratchCards);
 
   let html = `
-    <div style="
-      margin-top:20px;
-      background:#fffaf3;
-      border-radius:18px;
-      padding:20px;
-      text-align:center;
-    ">
-      <h2>🏆100点達成ボーナス🏆</h2>
+    <div style="margin-top:20px;background:#fffaf3;border-radius:18px;padding:20px;text-align:center;">
+      <h2>🏆ボーナススクラッチ🏆</h2>
+
+      <p style="font-size:15px;">
+        現在のボーナスライフ：<br>
+        <b style="color:#d4a000;font-size:22px;">${"⭐".repeat(life)}</b>
+      </p>
 
       <p>
         9マスから4つ選んでください！<br>
@@ -496,10 +447,7 @@ scratchCards = [
         ⭐1つ以下：😭残念
       </p>
 
-      <p id="scratchCount" class="small">
-        選択中：0 / 4
-      </p>
-
+      <p id="scratchCount" class="small">選択中：0 / 4</p>
       <div class="scratchGrid">
   `;
 
@@ -525,9 +473,7 @@ function openScratch(index){
   if(scratchOpened.length >= 4) return;
 
   scratchOpened.push(index);
-
-  document.getElementById(`scratch${index}`).innerHTML =
-    scratchCards[index];
+  document.getElementById(`scratch${index}`).innerHTML = scratchCards[index];
 
   const starCount = scratchOpened
     .map(i => scratchCards[i])
@@ -546,8 +492,7 @@ function finishScratch(){
     .map(index => scratchCards[index])
     .filter(card => card === "⭐").length;
 
-  document.getElementById("scratchResult").innerHTML =
-    "✨結果発表中…✨";
+  document.getElementById("scratchResult").innerHTML = "✨結果発表中…✨";
 
   setTimeout(() => {
     scratchCards.forEach((card,index) => {
@@ -570,13 +515,11 @@ function finishScratch(){
     }else if(starCount === 2){
       resultText = "🍬飴1つGET！！";
     }else{
-      resultText = "😭残念！また100点を狙ってね！";
+      resultText = "😭残念！また挑戦してね！";
     }
 
     document.getElementById("scratchResult").innerHTML = `
-      <strong style="font-size:20px;">
-        ⭐ ${starCount}個
-      </strong>
+      <strong style="font-size:20px;">⭐ ${starCount}個</strong>
       <br><br>
       ${resultText}
       <br><br>
