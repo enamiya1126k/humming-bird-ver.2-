@@ -37,6 +37,9 @@ button{
   font-size:18px;
   font-weight:bold;
 }
+button:disabled{
+  background:#c7bda8;
+}
 input[type="text"]{
   width:100%;
   box-sizing:border-box;
@@ -68,12 +71,6 @@ input[type="text"]{
   font-weight:bold;
   text-align:center;
   margin:20px 0;
-}
-.scoreBox{
-  background:#f7f1e8;
-  padding:14px;
-  border-radius:14px;
-  margin:12px 0;
 }
 .hidden{display:none;}
 .small{
@@ -124,12 +121,15 @@ input[type="text"]{
 
 <script>
 const STAGE_COUNT = 20;
+const HINT_INTERVAL = 5;
 
 let current = 0;
 let score = 0;
 let quiz = [];
 let staffName = "";
 let answered = false;
+
+let hintAvailable = true;
 
 function shuffle(array){
   const arr = [...array];
@@ -160,6 +160,7 @@ function startQuiz(){
   current = 0;
   score = 0;
   quiz = [];
+  hintAvailable = true;
 
   for(let i = 0; i < STAGE_COUNT; i++){
     quiz.push(createStage());
@@ -188,24 +189,36 @@ function createStage(){
   return shuffle([...correctItems, ...wrongItems]);
 }
 
+function updateQuestionHeader(){
+  const wrongCount = current - score;
+  const hintBlockStart = Math.floor(current / HINT_INTERVAL) * HINT_INTERVAL + 1;
+  const hintBlockEnd = Math.min(hintBlockStart + HINT_INTERVAL - 1, STAGE_COUNT);
+
+  document.getElementById("questionNumber").innerHTML = `
+    ステージ ${current + 1} / ${STAGE_COUNT}<br>
+    <span style="
+      font-size:16px;
+      color:#7b6a58;
+      font-weight:normal;
+    ">
+      ✅ ${score}問正解　❌ ${wrongCount}問不正解
+    </span><br>
+    <span style="font-size:15px;color:#8f7a52;font-weight:normal;">
+      💡ヒント：${hintAvailable ? "使用可能" : "使用済み"}
+      <br>
+      <span style="font-size:13px;">
+        対象ステージ：${hintBlockStart}〜${hintBlockEnd}
+      </span>
+    </span>
+  `;
+}
+
 function showQuestion(){
   answered = false;
 
   document.getElementById("feedback").innerHTML = "";
-  
-  const wrongCount = current - score;
+  updateQuestionHeader();
 
-document.getElementById("questionNumber").innerHTML = `
-  ステージ ${current + 1} / ${STAGE_COUNT}<br>
-  <span style="
-    font-size:16px;
-    color:#7b6a58;
-    font-weight:normal;
-  ">
-    ✅ ${score}問正解　❌ ${wrongCount}問不正解
-  </span>
-`;
-  
   const area = document.getElementById("choices");
   area.innerHTML = "";
 
@@ -219,10 +232,62 @@ document.getElementById("questionNumber").innerHTML = `
     area.appendChild(label);
   });
 
+  const hintBtn = document.createElement("button");
+  hintBtn.id = "hintButton";
+  hintBtn.innerText = hintAvailable ? "💡 救済ヒントを使う" : "💡 ヒント使用済み";
+  hintBtn.disabled = !hintAvailable;
+  hintBtn.onclick = useHint;
+  area.appendChild(hintBtn);
+
   const btn = document.createElement("button");
   btn.innerText = "回答する";
   btn.onclick = checkAnswer;
   area.appendChild(btn);
+}
+
+function useHint(){
+  if(answered) return;
+
+  if(!hintAvailable){
+    alert("この5ステージではもうヒントを使っています。");
+    return;
+  }
+
+  const stage = quiz[current];
+
+  const wrongIndexes = stage
+    .map((item,index) => !item.isCorrect ? index : null)
+    .filter(index => index !== null);
+
+  if(wrongIndexes.length === 0) return;
+
+  const removeIndex = wrongIndexes[Math.floor(Math.random() * wrongIndexes.length)];
+
+  const choices = document.querySelectorAll(".choice");
+  const target = choices[removeIndex];
+  const input = target.querySelector("input");
+
+  input.checked = false;
+  input.disabled = true;
+  target.style.opacity = "0.28";
+  target.style.pointerEvents = "none";
+
+  hintAvailable = false;
+
+  const hintBtn = document.getElementById("hintButton");
+  if(hintBtn){
+    hintBtn.innerText = "💡 ヒント使用済み";
+    hintBtn.disabled = true;
+  }
+
+  updateQuestionHeader();
+
+  document.getElementById("feedback").innerHTML = `
+    <div class="explain">
+      💡救済ヒント発動！<br>
+      不正解の選択肢を1つ消しました。
+    </div>
+  `;
 }
 
 function checkAnswer(){
@@ -265,6 +330,9 @@ function checkAnswer(){
     }
   });
 
+  const hintBtn = document.getElementById("hintButton");
+  if(hintBtn) hintBtn.disabled = true;
+
   let explainHtml = stage.map(item => `
     <div style="margin-bottom:14px;">
       <strong>${item.isCorrect ? "✅ 正しい文" : "❌ 間違い文"}</strong><br>
@@ -285,10 +353,16 @@ function checkAnswer(){
 
 function nextQuestion(){
   current++;
+
   if(current >= STAGE_COUNT){
     finishQuiz();
     return;
   }
+
+  if(current % HINT_INTERVAL === 0){
+    hintAvailable = true;
+  }
+
   showQuestion();
 }
 
@@ -350,9 +424,9 @@ function finishQuiz(){
     </div>
   `;
 
-if(percent === 100){
-  createBonusGame();
-}
+  if(percent === 100){
+    createBonusGame();
+  }
 }
 
 let scratchOpened = [];
