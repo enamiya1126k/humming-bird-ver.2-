@@ -109,7 +109,7 @@ let gameOver = false;
 let hintUsedThisStage = false;
 let bonusScratchExtraStar = 0;
 let warningShownLife = null;
-
+let challengeCount = Number(localStorage.getItem("HB_CHALLENGE_COUNT")) || 1;
 
 function shuffle(array){
   const arr = [...array];
@@ -712,27 +712,81 @@ function finishScratch(){
       btn.disabled = true;
     });
 
-    let resultText = "";
+let prize = "";
 
-    if(starCount === 4){
-      resultText = "🎉大当たり！🥤500円以内のジュース1本GET！！";
-    }else if(starCount === 3){
-      resultText = "🎊当たり！🍫150円以内のお菓子1つGET！！";
-    }else if(starCount === 2){
-      resultText = "🍬飴1つGET！！";
-    }else{
-      resultText = "😭残念！また挑戦してね！";
-    }
+if(starCount === 4){
+  prize = "🥤500円以内のジュース";
+}else if(starCount === 3){
+  prize = "🍫150円以内のお菓子";
+}else if(starCount === 2){
+  prize = "🍬飴1個";
+}
 
-    document.getElementById("scratchResult").innerHTML = `
-      <strong style="font-size:20px;">⭐ ${starCount}個</strong>
-      <br><br>
-      ${resultText}
-      <br><br>
-      <span style="color:#7b6a58;">
-        ※薄く表示されているマスが、選ばなかった場所です。
-      </span>
-    `;
+if(prize){
+
+document.getElementById("scratchResult").innerHTML = `
+<h2>🎉 景品獲得！</h2>
+
+<div style="
+background:#fff7d6;
+border:2px solid #f2c94c;
+border-radius:16px;
+padding:20px;
+margin:18px 0;
+line-height:1.9;
+">
+
+<div style="
+font-size:18px;
+font-weight:bold;
+margin-bottom:12px;
+">
+🎉 第${challengeCount}回チャレンジ
+</div>
+
+<div style="
+font-size:28px;
+font-weight:bold;
+">
+${prize}
+</div>
+
+<br>
+
+📸 この画面をスクリーンショットして<br>
+担当スタッフへ見せてください♪
+
+</div>
+`;
+
+challengeCount++;
+localStorage.setItem("HB_CHALLENGE_COUNT", challengeCount);
+
+}else{
+
+document.getElementById("scratchResult").innerHTML = `
+<h2>😭 残念！</h2>
+
+<div style="
+background:#fff4f4;
+padding:18px;
+border-radius:16px;
+line-height:1.8;
+">
+
+🎉 第${challengeCount}回チャレンジ
+
+<br><br>
+
+今回は景品獲得ならず…
+
+</div>
+`;
+
+challengeCount++;
+localStorage.setItem("HB_CHALLENGE_COUNT", challengeCount);
+
+}
   }, 600);
 }
 </script>
