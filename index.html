@@ -495,8 +495,30 @@ function finishQuiz(){
 
   const percent = Math.round(score / STAGE_COUNT * 100);
 
-  let rank = "🌱 見習いスタッフ";
-  let comment = "まずは解説を読んで復習しよう！";
+let rank = "🌱 見習いスタッフ";
+let comment = "まずは解説を読んで復習しよう！";
+const reachedStage = Math.min(current + 1, STAGE_COUNT);
+
+if(gameOver){
+
+  if(reachedStage <= 4){
+    rank = "💀 迷子のひな鳥";
+    comment = "まだ羽ばたく前。まずは解説を読んで再挑戦しよう！";
+  }else if(reachedStage <= 8){
+    rank = "🐣 ひよこスタッフ";
+    comment = "序盤は突破できてる。あと少しで知識がつながり始める！";
+  }else if(reachedStage <= 12){
+    rank = "🌱 新人スタッフ";
+    comment = "中盤まで到達。ここまで来られるなら伸びしろ十分！";
+  }else if(reachedStage <= 16){
+    rank = "🌿 中堅スタッフ";
+    comment = "かなり粘った。実戦で使える知識が増えてきてる！";
+  }else{
+    rank = "🔥 惜しかったスタッフ";
+    comment = "あと少しで完走。ここまで来たならクリア目前！";
+  }
+
+}else{
 
   if(percent === 100){
     rank = "👑 神鳥（ゴッドハミングバード）";
@@ -518,10 +540,13 @@ function finishQuiz(){
     comment = "逆にここまで外す方が難しい。才能を感じる。";
   }
 
+}
+
   document.getElementById("scoreText").innerHTML = `
     ${staffName}さんの結果<br><br>
-    <strong>${score} / ${STAGE_COUNT} ステージ正解</strong><br>
-    総合得点 ${percent}点<br>
+<strong>${score} / ${STAGE_COUNT} ステージ正解</strong><br>
+🏁到達ステージ：${reachedStage} / ${STAGE_COUNT}<br>
+総合得点 ${percent}点<br>
     💡ヒント使用：${hintUseCount} / ${MAX_HINT_COUNT}回<br>
 ❤️LIFE：${life} / ${MAX_LIFE}<br>
 🎁スクラッチ追加⭐：${bonusScratchExtraStar}個<br><br>
