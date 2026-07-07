@@ -350,9 +350,9 @@ function finishQuiz(){
     </div>
   `;
 
-  if(percent === 100){
-    createBonusGame();
-  }
+if(score >= 1){
+  createBonusGame();
+}
 }
 
 let scratchOpened = [];
