@@ -95,6 +95,9 @@ let hintUseCount = 0;
 let life = MAX_LIFE;
 let gameOver = false;
 let hintUsedThisStage = false;
+let bonusScratchExtraStar = 0;
+let warningShownLife = null;
+
 
 function shuffle(array){
   const arr = [...array];
@@ -129,6 +132,8 @@ function startQuiz(){
   hintUseCount = 0;
   life = MAX_LIFE;
 gameOver = false;
+bonusScratchExtraStar = 0;
+warningShownLife = null;
 
   for(let i = 0; i < STAGE_COUNT; i++){
     quiz.push(createStage());
@@ -246,7 +251,26 @@ hintUsedThisStage = true;
 hintUseCount++;
 life--;
 
-  if(life < 0) life = 0;
+if(life < 0) life = 0;
+
+if(life <= 0){
+  gameOver = true;
+}
+
+if(gameOver){
+  document.getElementById("feedback").innerHTML = `
+    <div class="explain">
+      💡救済ヒント発動！<br>
+      不正解の選択肢を1つ消しました。<br><br>
+      <strong style="color:#d9534f;">
+        ボーナスライフ -⭐<br>
+        💀 ライフがなくなりました！
+      </strong>
+      <button onclick="finishQuiz()">結果を見る</button>
+    </div>
+  `;
+  return;
+}
 
   const hintBtn = document.getElementById("hintButton");
   if(hintBtn){
@@ -255,6 +279,7 @@ life--;
   }
 
   updateQuestionHeader();
+showWarningIfNeeded();
 
   document.getElementById("feedback").innerHTML = `
     <div class="explain">
@@ -263,6 +288,15 @@ life--;
       <strong style="color:#d9534f;">ボーナスライフ -⭐</strong>
     </div>
   `;
+}
+
+function showWarningIfNeeded(){
+  if(gameOver) return;
+
+  if(life <= 2 && life > 0 && warningShownLife !== life){
+    warningShownLife = life;
+    alert(`⚠️ WARNING\nボーナスライフ残り${life}個！\nあと1回ミスでGAME OVER！`);
+  }
 }
 
 function checkAnswer(){
@@ -330,6 +364,7 @@ if(isCorrect){
 }
 
   updateQuestionHeader();
+showWarningIfNeeded();
 
   document.querySelectorAll(".choice").forEach(label => {
     const input = label.querySelector("input");
@@ -370,24 +405,36 @@ if(isCorrect){
 }
 
 function luckyBonus(){
-  if(current % 5 !== 0) return;
   if(current >= STAGE_COUNT) return;
   if(gameOver) return;
 
   const isLucky = Math.random() < 0.5;
 
   if(isLucky){
-    const beforeLife = life;
-    life += 2;
-    if(life > MAX_LIFE) life = MAX_LIFE;
 
-    const recovered = life - beforeLife;
+    if(life >= MAX_LIFE){
+      bonusScratchExtraStar++;
+      if(bonusScratchExtraStar > 1) bonusScratchExtraStar = 1;
 
-    alert(
-      recovered > 0
-        ? `🎁 Lucky Bonus！\n⭐⭐ ${recovered}個回復！`
-        : `🎁 Lucky Bonus！\nすでにライフ満タン！`
-    );
+      alert(
+        `🎁 Lucky Bonus！\n` +
+        `ライフ満タンのため、ボーナススクラッチの⭐が1個増えます！`
+      );
+
+    }else{
+      const beforeLife = life;
+      life += 2;
+      if(life > MAX_LIFE) life = MAX_LIFE;
+
+      const recovered = life - beforeLife;
+
+      alert(
+        recovered > 0
+          ? `🎁 Lucky Bonus！\n⭐ ${recovered}個回復！`
+          : `🎁 Lucky Bonus！\nすでにライフ満タン！`
+      );
+    }
+
   }else{
     alert("🎁 Lucky Bonus！\n今回は回復なし…！");
   }
@@ -450,7 +497,8 @@ function finishQuiz(){
     <strong>${score} / ${STAGE_COUNT} ステージ正解</strong><br>
     総合得点 ${percent}点<br>
     💡ヒント使用：${hintUseCount} / ${MAX_HINT_COUNT}回<br>
-    ⭐ボーナスライフ：${life} / ${MAX_LIFE}<br><br>
+⭐ボーナスライフ：${life} / ${MAX_LIFE}<br>
+🎁スクラッチ追加⭐：${bonusScratchExtraStar}個<br><br>
 
     <div style="background:#f7f1e8;padding:18px;border-radius:18px;margin:18px 0;font-size:22px;font-weight:bold;color:#2b2118;">
       ${rank}
@@ -472,11 +520,12 @@ if(life >= 2){
         margin-top:20px;
         text-align:center;
     ">
-        <h2>😭 ボーナス挑戦失敗</h2>
-        <p>
-            ⭐ボーナスライフが2個以上残っていないため、
-            ボーナススクラッチに挑戦できませんでした。
-        </p>
+        <h2>💀 GAME OVER</h2>
+
+<p>
+ボーナスライフが尽きました…。<br>
+ここまでの記録で終了です。
+</p>
     </div>
     `;
 }
@@ -488,8 +537,8 @@ let scratchCards = [];
 function createBonusGame(){
   scratchOpened = [];
 
-  const starTotal = life;
-  const cryTotal = 9 - life;
+const starTotal = Math.min(9, life + bonusScratchExtraStar);
+const cryTotal = 9 - starTotal;
 
   scratchCards = [
     ...Array(starTotal).fill("⭐"),
