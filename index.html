@@ -45,7 +45,7 @@ input[type="text"]{width:100%;box-sizing:border-box;padding:13px;border-radius:1
 最初は❤️LIFE×8 からスタート！<br>
 ❌ 不正解：❤️LIFE -2 <br>
 💡 ヒント使用：❤️LIFE -1 <br>
-💀 ❤️LIFEがゼロになるとgameover<br><br>
+💀 ❤️LIFEがゼロになるとGAME OVER<br><br>
 
   <b>💡 救済ヒント</b><br>
   5ステージごとに1回使えます。<br>
@@ -70,8 +70,9 @@ input[type="text"]{width:100%;box-sizing:border-box;padding:13px;border-radius:1
 </div>
 
   <p>スタッフ名</p>
-  <input id="staffName" type="text" placeholder="例：えなみ">
+  <input id="staffName" type="text" placeholder="例：毎回同じ名前を入力してね！">
   <button onclick="startQuiz()">クイズ開始</button>
+  <div id="rankingBoard" style="margin-top:22px;"></div>
 </div>
 
 <div id="quizScreen" class="hidden">
@@ -110,6 +111,8 @@ let hintUsedThisStage = false;
 let bonusScratchExtraStar = 0;
 let warningShownLife = null;
 let challengeCount = Number(localStorage.getItem("HB_CHALLENGE_COUNT")) || 1;
+let quizAttemptCount = Number(localStorage.getItem("HB_QUIZ_ATTEMPT_COUNT")) || 0;
+let currentQuizAttempt = 0;
 
 function shuffle(array){
   const arr = [...array];
@@ -136,6 +139,10 @@ function startQuiz(){
     alert("正解文・不正解文をもう少し追加してください。");
     return;
   }
+
+quizAttemptCount++;
+localStorage.setItem("HB_QUIZ_ATTEMPT_COUNT", quizAttemptCount);
+currentQuizAttempt = quizAttemptCount;
 
   current = 0;
   score = 0;
@@ -456,7 +463,7 @@ function luckyBonus(){
 
       alert(
         recovered > 0
-         ? `🎁 Lucky Bonus！\n❤️LIFE ${recovered}個回復！`
+         ? `🎁 Lucky Bonus！\n❤️LIFEが${recovered}個回復！`
           : `🎁 Lucky Bonus！\nすでにライフ満タン！`
       );
     }
@@ -487,6 +494,99 @@ function nextQuestion(){
   }
 
   showQuestion();
+}
+
+function saveRankingRecord(rank){
+  const records = JSON.parse(localStorage.getItem("HB_RANKING_RECORDS") || "[]");
+
+const reachedStage = Math.min(current + 1, STAGE_COUNT);
+const wrongCount = reachedStage - score;
+  const today = new Date().toLocaleDateString("ja-JP");
+
+  const newRecord = {
+    name: staffName,
+    attempt: currentQuizAttempt,
+    date: today,
+reachedStage: reachedStage,
+    life: life,
+    hintUseCount: hintUseCount,
+    score: score,
+    wrongCount: wrongCount,
+    rank: rank,
+    gameOver: gameOver
+  };
+
+  const existingIndex = records.findIndex(r => r.name === staffName);
+
+  if(existingIndex >= 0){
+    const old = records[existingIndex];
+
+    const isBetter =
+      newRecord.reachedStage > old.reachedStage ||
+      (newRecord.reachedStage === old.reachedStage && newRecord.score > old.score) ||
+      (newRecord.reachedStage === old.reachedStage && newRecord.score === old.score && newRecord.life > old.life) ||
+      (newRecord.reachedStage === old.reachedStage && newRecord.score === old.score && newRecord.life === old.life && newRecord.hintUseCount < old.hintUseCount);
+
+    if(isBetter){
+      records[existingIndex] = newRecord;
+    }
+  }else{
+    records.push(newRecord);
+  }
+
+  records.sort((a,b) =>
+    b.reachedStage - a.reachedStage ||
+    b.score - a.score ||
+    b.life - a.life ||
+    a.hintUseCount - b.hintUseCount ||
+    a.attempt - b.attempt
+  );
+
+  localStorage.setItem("HB_RANKING_RECORDS", JSON.stringify(records.slice(0, 10)));
+}
+
+function renderRankingBoard(){
+  const board = document.getElementById("rankingBoard");
+  if(!board) return;
+
+  const records = JSON.parse(localStorage.getItem("HB_RANKING_RECORDS") || "[]");
+  const top3 = records.slice(0, 3);
+
+  if(top3.length === 0){
+    board.innerHTML = `
+      <div style="background:#fffaf3;border:1px dashed #d8cbb8;border-radius:16px;padding:14px;text-align:center;color:#7b6a58;">
+        🏆ランキングはまだありません
+      </div>
+    `;
+    return;
+  }
+
+  board.innerHTML = `
+    <div style="background:#fffaf3;border:2px solid #e8d8bf;border-radius:18px;padding:16px;line-height:1.8;">
+      <h2 style="text-align:center;margin-top:0;">🏆 Hummingbirdランキング</h2>
+
+      ${top3.map((r,i) => `
+        <div style="font-size:18px;font-weight:bold;margin:8px 0;">
+          ${i + 1}位　${r.name}
+        </div>
+      `).join("")}
+
+      <div style="border-top:1px dashed #d8cbb8;margin:16px 0;"></div>
+
+      ${top3.map((r,i) => `
+        <div style="margin-bottom:14px;background:white;border-radius:14px;padding:12px;">
+          <strong>${i + 1}位：${r.name}</strong><br>
+          第${r.attempt}回目にて<br>
+          ${r.date}<br>
+          到達ステージ：${r.reachedStage} / ${STAGE_COUNT}<br>
+          残LIFE：${r.life} / ${MAX_LIFE}<br>
+          ヒント使用：${r.hintUseCount}回<br>
+          正解数：${r.score}　不正解数：${r.wrongCount}<br>
+          称号：${r.rank}
+        </div>
+      `).join("")}
+    </div>
+  `;
 }
 
 function finishQuiz(){
@@ -541,6 +641,9 @@ if(gameOver){
   }
 
 }
+
+saveRankingRecord(rank);
+renderRankingBoard();
 
 document.getElementById("scoreText").innerHTML = `
   ${staffName}さんの結果<br><br>
@@ -789,6 +892,7 @@ localStorage.setItem("HB_CHALLENGE_COUNT", challengeCount);
 }
   }, 600);
 }
+renderRankingBoard();
 </script>
 
 </body>
