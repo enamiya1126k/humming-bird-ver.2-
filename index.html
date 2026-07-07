@@ -93,6 +93,7 @@ let answered = false;
 let hintAvailable = true;
 let hintUseCount = 0;
 let life = MAX_LIFE;
+let hintUsedThisStage = false;
 
 function shuffle(array){
   const arr = [...array];
@@ -181,6 +182,7 @@ function updateQuestionHeader(){
 
 function showQuestion(){
   answered = false;
+  hintUsedThisStage = false;
   document.getElementById("feedback").innerHTML = "";
   updateQuestionHeader();
 
@@ -237,9 +239,10 @@ function useHint(){
   target.style.opacity = "0.28";
   target.style.pointerEvents = "none";
 
-  hintAvailable = false;
-  hintUseCount++;
-  life--;
+hintAvailable = false;
+hintUsedThisStage = true;
+hintUseCount++;
+life--;
 
   if(life < 0) life = 0;
 
@@ -286,14 +289,33 @@ function checkAnswer(){
 
   let damageText = "";
 
-  if(isCorrect){
-    score++;
-    damageText = `<div style="color:#3c8c5a;font-size:18px;font-weight:bold;margin:12px 0;">🎉 ボーナスライフ減少なし！</div>`;
+if(isCorrect){
+  score++;
+
+  if(hintUsedThisStage){
+    damageText = `
+      <div style="color:#d9534f;font-size:18px;font-weight:bold;margin:12px 0;">
+        💡 ヒント使用済み：ボーナスライフ -⭐
+      </div>
+    `;
   }else{
-    life -= 2;
-    if(life < 0) life = 0;
-    damageText = `<div style="color:#d9534f;font-size:20px;font-weight:bold;margin:12px 0;">💥 ボーナスライフ -⭐⭐</div>`;
+    damageText = `
+      <div style="color:#3c8c5a;font-size:18px;font-weight:bold;margin:12px 0;">
+        🎉 ボーナスライフ減少なし！
+      </div>
+    `;
   }
+
+}else{
+  life -= 2;
+  if(life < 0) life = 0;
+
+  damageText = `
+    <div style="color:#d9534f;font-size:20px;font-weight:bold;margin:12px 0;">
+      💥 ボーナスライフ -⭐⭐
+    </div>
+  `;
+}
 
   updateQuestionHeader();
 
