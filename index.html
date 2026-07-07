@@ -175,16 +175,31 @@ function createStage(){
 
 function updateQuestionHeader(){
   const wrongCount = current - score;
-  const starText = "⭐".repeat(life) + "☆".repeat(MAX_LIFE - life);
+  const lifeText =
+"❤️".repeat(life) +
+"🤍".repeat(MAX_LIFE-life);
   const hintBlockStart = Math.floor(current / HINT_INTERVAL) * HINT_INTERVAL + 1;
   const hintBlockEnd = Math.min(hintBlockStart + HINT_INTERVAL - 1, STAGE_COUNT);
 
   document.getElementById("questionNumber").innerHTML = `
     ステージ ${current + 1} / ${STAGE_COUNT}<br>
 
-    <span style="font-size:22px;color:#d4a000;">
-      ${starText}
-    </span><br>
+<div style="
+font-size:18px;
+font-weight:bold;
+color:#d9534f;
+margin-top:6px;
+">
+❤️ LIFE　${life} / ${MAX_LIFE}
+</div>
+
+<div style="
+font-size:24px;
+letter-spacing:2px;
+margin-bottom:6px;
+">
+${lifeText}
+</div>
 
     <span style="font-size:16px;color:#7b6a58;font-weight:normal;">
       ✅ ${score}問正解　❌ ${wrongCount}問不正解
@@ -509,7 +524,7 @@ function finishQuiz(){
     <strong>${score} / ${STAGE_COUNT} ステージ正解</strong><br>
     総合得点 ${percent}点<br>
     💡ヒント使用：${hintUseCount} / ${MAX_HINT_COUNT}回<br>
-⭐ボーナスライフ：${life} / ${MAX_LIFE}<br>
+❤️LIFE：${life} / ${MAX_LIFE}<br>
 🎁スクラッチ追加⭐：${bonusScratchExtraStar}個<br><br>
 
     <div style="background:#f7f1e8;padding:18px;border-radius:18px;margin:18px 0;font-size:22px;font-weight:bold;color:#2b2118;">
@@ -564,8 +579,8 @@ const cryTotal = 9 - starTotal;
       <h2>🏆ボーナススクラッチ🏆</h2>
 
       <p style="font-size:15px;">
-        現在のボーナスライフ：<br>
-        <b style="color:#d4a000;font-size:22px;">${"⭐".repeat(life)}</b>
+        ❤️ 残りLIFE<br>
+        <b style="color:#d4a000;font-size:22px;">${"❤️".repeat(life)}</b>
       </p>
 
       <p>
