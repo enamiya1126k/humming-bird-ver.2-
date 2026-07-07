@@ -95,7 +95,32 @@ input[type="text"]{
 
 <div id="startScreen">
   <h1>Hummingbird<br>商品知識クイズ</h1>
-  <p class="small">20ステージ満点でスクラッチ解放</p>
+  <div style="
+background:#fffaf3;
+border:2px solid #e8d8bf;
+border-radius:18px;
+padding:16px;
+margin:18px 0;
+line-height:1.8;
+text-align:left;
+font-size:15px;
+">
+
+<b>🎮 ゲームルール</b><br><br>
+
+✅ 全20ステージに挑戦！<br>
+✅ 100点達成でボーナススクラッチ解放！<br><br>
+
+💡 <b>救済ヒント</b><br>
+・5ステージごとに1回使用できます（最大4回）<br>
+・不正解の選択肢を1つ消します。<br><br>
+
+⭐ <b>ヒントを使わないほどスクラッチが有利！</b><br>
+ヒント未使用1回につき、あたり⭐が1つ増えます！<br><br>
+
+🏆 目指せ100点＆ヒント温存！
+
+</div>
 
   <p>スタッフ名</p>
   <input id="staffName" type="text" placeholder="例：えなみ">
@@ -122,6 +147,8 @@ input[type="text"]{
 <script>
 const STAGE_COUNT = 20;
 const HINT_INTERVAL = 5;
+const MAX_HINT_COUNT = STAGE_COUNT / HINT_INTERVAL;
+
 
 let current = 0;
 let score = 0;
@@ -130,6 +157,7 @@ let staffName = "";
 let answered = false;
 
 let hintAvailable = true;
+let hintUseCount = 0;
 
 function shuffle(array){
   const arr = [...array];
@@ -157,10 +185,11 @@ function startQuiz(){
     return;
   }
 
-  current = 0;
-  score = 0;
-  quiz = [];
-  hintAvailable = true;
+current = 0;
+score = 0;
+quiz = [];
+hintAvailable = true;
+hintUseCount = 0;
 
   for(let i = 0; i < STAGE_COUNT; i++){
     quiz.push(createStage());
@@ -273,6 +302,7 @@ function useHint(){
   target.style.pointerEvents = "none";
 
   hintAvailable = false;
+  hintUseCount++;
 
   const hintBtn = document.getElementById("hintButton");
   if(hintBtn){
@@ -397,8 +427,10 @@ function finishQuiz(){
 
   document.getElementById("scoreText").innerHTML = `
     ${staffName}さんの結果<br><br>
-    <strong>${score} / ${STAGE_COUNT} ステージ正解</strong><br>
-    総合得点 ${percent}点<br><br>
+<strong>${score} / ${STAGE_COUNT} ステージ正解</strong><br>
+総合得点 ${percent}点<br>
+💡ヒント使用：${hintUseCount} / ${MAX_HINT_COUNT}回<br>
+⭐未使用ヒント：${MAX_HINT_COUNT - hintUseCount}回<br><br>
 
     <div style="
       background:#f7f1e8;
@@ -435,10 +467,14 @@ let scratchCards = [];
 function createBonusGame(){
   scratchOpened = [];
 
-  scratchCards = [
-    "⭐","⭐","⭐","⭐",
-    "😭","😭","😭","😭","😭"
-  ];
+const unusedHintCount = MAX_HINT_COUNT - hintUseCount;
+const starTotal = Math.min(8, 4 + unusedHintCount);
+const cryTotal = 9 - starTotal;
+
+scratchCards = [
+  ...Array(starTotal).fill("⭐"),
+  ...Array(cryTotal).fill("😭")
+];
 
   scratchCards = shuffle(scratchCards);
 
