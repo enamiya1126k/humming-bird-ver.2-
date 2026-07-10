@@ -621,12 +621,22 @@ function updateRankingScratchPrize(prizeText){
     localStorage.getItem("HB_RANKING_RECORDS") || "[]"
   );
 
-  const recordIndex = records.findIndex(record =>
+  // まず今回の挑戦回と完全一致する記録を探す
+  let recordIndex = records.findIndex(record =>
     record.name === staffName &&
     record.attempt === currentQuizAttempt
   );
 
+  // 今回の記録がベスト更新されていない場合は、
+  // 同じ名前のベスト記録へ景品を反映する
   if(recordIndex === -1){
+    recordIndex = records.findIndex(record =>
+      record.name === staffName
+    );
+  }
+
+  if(recordIndex === -1){
+    console.warn("景品を書き込むランキング記録が見つかりませんでした。");
     return;
   }
 
