@@ -53,8 +53,8 @@ input[type="text"]{width:100%;box-sizing:border-box;padding:13px;border-radius:1
 
   <b>🎁 Lucky Bonus</b><br>
   5ステージクリアごとに抽選！<br>
-  50％で❤️LIFE×2 回復<br>
-  50％で回復なし<br>
+❤️LIFEが1〜5個ランダム回復！<br>
+※4・5個回復はレアです。<br>
   ※ライフ満タン時はスクラッチの⭐が1個増えます。<br><br>
 
   <b>🎉 ボーナススクラッチ</b><br>
@@ -441,36 +441,52 @@ function luckyBonus(){
   if(current >= STAGE_COUNT) return;
   if(gameOver) return;
 
-  const isLucky = Math.random() < 0.5;
+  const random = Math.random();
 
-  if(isLucky){
+  let recoverAmount = 1;
 
-    if(life >= MAX_LIFE){
-      bonusScratchExtraStar++;
-      if(bonusScratchExtraStar > 1) bonusScratchExtraStar = 1;
+  if(random < 0.30){
+    recoverAmount = 1;
+  }else if(random < 0.60){
+    recoverAmount = 2;
+  }else if(random < 0.85){
+    recoverAmount = 3;
+  }else if(random < 0.95){
+    recoverAmount = 4;
+  }else{
+    recoverAmount = 5;
+  }
 
-      alert(
-        `🎁 Lucky Bonus！\n` +
-        `ライフ満タンのため、ボーナススクラッチの⭐が1個増えます！`
-      );
+  if(life >= MAX_LIFE){
+    bonusScratchExtraStar++;
 
-    }else{
-      const beforeLife = life;
-      life += 2;
-      if(life > MAX_LIFE) life = MAX_LIFE;
-
-      const recovered = life - beforeLife;
-
-      alert(
-        recovered > 0
-         ? `🎁 Lucky Bonus！\n❤️LIFEが${recovered}個回復！`
-          : `🎁 Lucky Bonus！\nすでにライフ満タン！`
-      );
+    if(bonusScratchExtraStar > 1){
+      bonusScratchExtraStar = 1;
     }
 
-  }else{
-    alert("🎁 Lucky Bonus！\n今回は回復なし…！");
+    alert(
+      `🎁 Lucky Bonus！\n` +
+      `❤️LIFEは満タン！\n` +
+      `ボーナススクラッチの⭐が1個増えます！`
+    );
+
+    return;
   }
+
+  const beforeLife = life;
+
+  life += recoverAmount;
+
+  if(life > MAX_LIFE){
+    life = MAX_LIFE;
+  }
+
+  const actualRecovered = life - beforeLife;
+
+  alert(
+    `🎁 Lucky Bonus！\n` +
+    `❤️LIFEが${actualRecovered}個回復！`
+  );
 }
 
 function nextQuestion(){
