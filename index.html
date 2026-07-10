@@ -109,6 +109,7 @@ let life = MAX_LIFE;
 let gameOver = false;
 let hintUsedThisStage = false;
 let bonusScratchExtraStar = 0;
+let goalClearBonusStar = 0;
 let warningShownLife = null;
 let challengeCount = Number(localStorage.getItem("HB_CHALLENGE_COUNT")) || 1;
 let quizAttemptCount = Number(localStorage.getItem("HB_QUIZ_ATTEMPT_COUNT")) || 0;
@@ -152,6 +153,7 @@ currentQuizAttempt = quizAttemptCount;
   life = MAX_LIFE;
 gameOver = false;
 bonusScratchExtraStar = 0;
+goalClearBonusStar = 0;
 warningShownLife = null;
 
   for(let i = 0; i < STAGE_COUNT; i++){
@@ -614,6 +616,11 @@ function finishQuiz(){
 let rank = "🌱 見習いスタッフ";
 let comment = "まずは解説を読んで復習しよう！";
 const reachedStage = Math.min(current + 1, STAGE_COUNT);
+const goalReached = reachedStage >= STAGE_COUNT;
+
+if(goalReached){
+  goalClearBonusStar = 2;
+}
 
 if(gameOver){
 
@@ -700,7 +707,8 @@ document.getElementById("scoreText").innerHTML = `
     正解数：<strong>${score} / ${STAGE_COUNT}</strong><br>
     総合得点：<strong>${percent}点</strong><br>
     ヒント：<strong>${hintUseCount} / ${MAX_HINT_COUNT}回</strong><br>
-    🎁スクラッチ追加⭐：<strong>${bonusScratchExtraStar}個</strong>
+🎁Lucky Bonus追加⭐：<strong>${bonusScratchExtraStar}個</strong><br>
+🏁ゴールボーナス⭐：<strong>${goalClearBonusStar}個</strong>
 
   </div>
 
@@ -717,7 +725,7 @@ document.getElementById("scoreText").innerHTML = `
   </div>
 `;
 
-if(!gameOver && life >= 2){
+if(goalReached || (!gameOver && life >= 2)){
     createBonusGame();
 }else{
     document.getElementById("bonusGame").innerHTML = `
@@ -745,7 +753,11 @@ let scratchCards = [];
 function createBonusGame(){
   scratchOpened = [];
 
-const starTotal = Math.min(8, life + bonusScratchExtraStar);
+const starTotal = Math.min(
+  9,
+  life + bonusScratchExtraStar + goalClearBonusStar
+);
+
 const cryTotal = 9 - starTotal;
 
   scratchCards = [
@@ -759,10 +771,20 @@ const cryTotal = 9 - starTotal;
     <div style="margin-top:20px;background:#fffaf3;border-radius:18px;padding:20px;text-align:center;">
       <h2>🏆ボーナススクラッチ🏆</h2>
 
-      <p style="font-size:15px;">
-        ❤️ 残りLIFE<br>
-        <b style="color:#d4a000;font-size:22px;">${"❤️".repeat(life)}</b>
-      </p>
+  <p style="font-size:15px;">
+  ❤️ 残りLIFE<br>
+  <b style="font-size:22px;">${"❤️".repeat(life) || "0"}</b><br><br>
+
+  ${goalClearBonusStar > 0
+    ? `<strong style="color:#d4a000;">
+         🏁 20ステージ到達ボーナス！<br>
+         スクラッチ⭐＋${goalClearBonusStar}
+       </strong><br><br>`
+    : ""
+  }
+
+  スクラッチ内の当たり⭐：${starTotal}個
+</p>
 
       <p>
         9マスから4つ選んでください！<br>
