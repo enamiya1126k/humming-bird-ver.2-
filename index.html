@@ -521,18 +521,21 @@ const reachedStage = Math.min(current + 1, STAGE_COUNT);
 const wrongCount = reachedStage - score;
   const today = new Date().toLocaleDateString("ja-JP");
 
-  const newRecord = {
-    name: staffName,
-    attempt: currentQuizAttempt,
-    date: today,
-reachedStage: reachedStage,
-    life: life,
-    hintUseCount: hintUseCount,
-    score: score,
-    wrongCount: wrongCount,
-    rank: rank,
-    gameOver: gameOver
-  };
+const newRecord = {
+  name: staffName,
+  attempt: currentQuizAttempt,
+  date: today,
+  reachedStage: reachedStage,
+  life: life,
+  hintUseCount: hintUseCount,
+  score: score,
+  wrongCount: wrongCount,
+  rank: rank,
+  gameOver: gameOver,
+  scratchPrize: reachedStage >= STAGE_COUNT
+    ? "スクラッチ抽選前"
+    : "挑戦なし"
+};
 
   const existingIndex = records.findIndex(r => r.name === staffName);
 
@@ -591,20 +594,50 @@ function renderRankingBoard(){
 
       <div style="border-top:1px dashed #d8cbb8;margin:16px 0;"></div>
 
-      ${top3.map((r,i) => `
-        <div style="margin-bottom:14px;background:white;border-radius:14px;padding:12px;">
-          <strong>${i + 1}位：${r.name}</strong><br>
-          第${r.attempt}回目にて<br>
-          ${r.date}<br>
-          到達ステージ：${r.reachedStage} / ${STAGE_COUNT}<br>
-          残LIFE：${r.life} / ${MAX_LIFE}<br>
-          ヒント使用：${r.hintUseCount}回<br>
-          正解数：${r.score}　不正解数：${r.wrongCount}<br>
-          称号：${r.rank}
-        </div>
-      `).join("")}
+${top3.map((r,i) => `
+  <div style="
+    margin-bottom:14px;
+    background:white;
+    border-radius:14px;
+    padding:12px;
+  ">
+    <strong>${i + 1}位：${r.name}</strong><br>
+    第${r.attempt}回目にて<br>
+    ${r.date}<br>
+    到達ステージ：${r.reachedStage} / ${STAGE_COUNT}<br>
+    残LIFE：${r.life} / ${MAX_LIFE}<br>
+    ヒント使用：${r.hintUseCount}回<br>
+    正解数：${r.score}　不正解数：${r.wrongCount}<br>
+    称号：${r.rank}<br>
+    スクラッチ景品：<strong>${r.scratchPrize || "記録なし"}</strong>
+  </div>
+`).join("")}
     </div>
   `;
+}
+
+function updateRankingScratchPrize(prizeText){
+  const records = JSON.parse(
+    localStorage.getItem("HB_RANKING_RECORDS") || "[]"
+  );
+
+  const recordIndex = records.findIndex(record =>
+    record.name === staffName &&
+    record.attempt === currentQuizAttempt
+  );
+
+  if(recordIndex === -1){
+    return;
+  }
+
+  records[recordIndex].scratchPrize = prizeText;
+
+  localStorage.setItem(
+    "HB_RANKING_RECORDS",
+    JSON.stringify(records)
+  );
+
+  renderRankingBoard();
 }
 
 function finishQuiz(){
@@ -865,6 +898,8 @@ if(starCount === 4){
 
 if(prize){
 
+updateRankingScratchPrize(prize);
+
 document.getElementById("scratchResult").innerHTML = `
 <h2>🎉 景品獲得！</h2>
 
@@ -904,6 +939,8 @@ challengeCount++;
 localStorage.setItem("HB_CHALLENGE_COUNT", challengeCount);
 
 }else{
+
+updateRankingScratchPrize("😭 景品獲得なし");
 
 document.getElementById("scratchResult").innerHTML = `
 <h2>😭 残念！</h2>
