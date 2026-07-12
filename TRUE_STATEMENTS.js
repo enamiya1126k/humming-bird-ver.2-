@@ -1,6 +1,21 @@
 const TRUE_STATEMENTS = [
 
 {
+text:"丸登靴下工業（MARUTOKK）の本社は群馬県桐生市にある。",
+explanation:"正解！MARUTOKKは群馬県桐生市に本社を構える、日本製ソックスのOEMメーカーです。"
+},
+
+{
+text:"MARUTOKKは群馬県に本社を置く老舗靴下メーカーである。",
+explanation:"正解！1934年創業の老舗メーカーです。"
+},
+
+{
+text:"群馬県桐生市に本社を構えるMARUTOKKは、オリジナルブランド向けのOEM製造も手掛けている。",
+explanation:"正解！OEMを得意とし、多くのブランドの靴下づくりを支えています。"
+},
+
+{
 text:"丸山靴下有限会社は、東京都江戸川区にあった靴下メーカーである。",
 explanation:"正解！江戸川区で靴下を製造していたメーカーです。 [oai_citation:0‡江戸川産業ナビ](https://edogawanavi.jp/shop/600068/?utm_source=chatgpt.com)"
 },
