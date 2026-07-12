@@ -1,6 +1,31 @@
 const FALSE_STATEMENTS = [
 
 {
+text:"MARUTOKKは靴下を編む機械を製造しているメーカーである。",
+explanation:"それは島精機製作所などの編機メーカーです。MARUTOKKは靴下を製造するメーカーです。"
+},
+
+{
+text:"MARUTOKKは靴下の糸だけを製造している会社である。",
+explanation:"糸メーカーではなく、靴下のOEM製造を行っています。"
+},
+
+{
+text:"OEMとは、自社ブランドの商品だけを販売することをいう。",
+explanation:"OEMは他社ブランドの商品を製造する仕組みです。"
+},
+
+{
+text:"MARUTOKKは海外工場のみで靴下を製造している。",
+explanation:"日本製の靴下づくりを強みとしています。 [oai_citation:5‡丸登靴下](https://www.marutokk.jp/?utm_source=chatgpt.com)"
+},
+
+{
+text:"MARUTOKKは1934年から靴下の小売店として営業している。",
+explanation:"小売店ではなく、靴下メーカーとしてOEM製造などを行っています。 [oai_citation:6‡丸登靴下](https://www.marutokk.jp/?utm_source=chatgpt.com)"
+},
+
+{
 text:"専務の誕生日は12月30日である。",
 explanation:"あと1日！正しくは12月31日です。"
 },
