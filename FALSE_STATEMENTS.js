@@ -1,6 +1,11 @@
 const FALSE_STATEMENTS = [
 
 {
+text:"専務の誕生日は12月30日である。",
+explanation:"あと1日！正しくは12月31日です。"
+},
+
+{
 text:"島精機製作所は奈良県に本社を置く編機メーカーである。",
 explanation:"本社は和歌山県です。"
 },
