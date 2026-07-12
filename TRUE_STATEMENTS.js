@@ -1,6 +1,31 @@
 const TRUE_STATEMENTS = [
 
 {
+text:"丸登靴下工業（MARUTOKK）は、オリジナルブランド向けのOEM靴下製造を得意としている。",
+explanation:"正解！MARUTOKKは1934年創業の靴下メーカーで、OEM・カスタムソックスの製造を行っています。 [oai_citation:0‡丸登靴下](https://www.marutokk.jp/?utm_source=chatgpt.com)"
+},
+
+{
+text:"MARUTOKKは1934年創業の靴下メーカーである。",
+explanation:"1934年創業で、長年にわたり靴下づくりを続けています。 [oai_citation:1‡丸登靴下](https://www.marutokk.jp/?utm_source=chatgpt.com)"
+},
+
+{
+text:"MARUTOKKでは、デザインをもとにオリジナル靴下を製作できる。",
+explanation:"ブランドや企業向けにデザインからOEM製造まで対応しています。 [oai_citation:2‡丸登靴下](https://www.marutokk.jp/?utm_source=chatgpt.com)"
+},
+
+{
+text:"MARUTOKKは日本製の靴下づくりを強みとしている。",
+explanation:"Made in Japanにこだわった靴下製造を行っています。 [oai_citation:3‡丸登靴下](https://www.marutokk.jp/?utm_source=chatgpt.com)"
+},
+
+{
+text:"OEMとは、ブランドの代わりに製造を請け負う仕組みのことである。",
+explanation:"ブランドが企画し、メーカーが製造する代表的な生産方式です。 [oai_citation:4‡丸登靴下](https://www.marutokk.jp/?utm_source=chatgpt.com)"
+},
+
+{
 text:"ともあき専務の誕生日は12月31日（大晦日）である。",
 explanation:"正解！年末の最後の日がともあき専務のお誕生日です🎉"
 },
