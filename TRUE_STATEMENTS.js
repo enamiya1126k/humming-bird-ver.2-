@@ -1,6 +1,56 @@
 const TRUE_STATEMENTS = [
 
 {
+text:"丸山靴下有限会社は、東京都江戸川区にあった靴下メーカーである。",
+explanation:"正解！江戸川区で靴下を製造していたメーカーです。 [oai_citation:0‡江戸川産業ナビ](https://edogawanavi.jp/shop/600068/?utm_source=chatgpt.com)"
+},
+
+{
+text:"丸山靴下有限会社は、多品種少量生産を得意としていた。",
+explanation:"大量生産ではなく、多品種少量生産でファッション性の高い靴下づくりを行っていました。 [oai_citation:1‡江戸川産業ナビ](https://edogawanavi.jp/shop/600068/?utm_source=chatgpt.com)"
+},
+
+{
+text:"丸山靴下有限会社は、ファッション性の高い靴下づくりを得意としていた。",
+explanation:"婦人靴下やカジュアルソックスなど幅広い製品を製造していました。 [oai_citation:2‡江戸川産業ナビ](https://edogawanavi.jp/shop/600068/?utm_source=chatgpt.com)"
+},
+
+{
+text:"丸山靴下有限会社では、婦人靴下やスポーツソックスなど様々な製品を製造していた。",
+explanation:"スポーツソックス・婦人靴下・ルーズソックス・ヘアーバンドなどを手掛けていました。 [oai_citation:3‡江戸川産業ナビ](https://edogawanavi.jp/shop/600068/?utm_source=chatgpt.com)"
+},
+
+{
+text:"丸山靴下有限会社では、ヘアーバンドやリストバンドも製造していた。",
+explanation:"靴下以外にもヘアーバンドやリストバンドを製造していました。 [oai_citation:4‡江戸川産業ナビ](https://edogawanavi.jp/shop/600068/?utm_source=chatgpt.com)"
+},
+
+{
+text:"丸山靴下有限会社では、綿・毛・絹・ナイロン・アクリル・ポリウレタンなど幅広い素材を扱っていた。",
+explanation:"天然素材から化学繊維まで様々な素材を使用していました。 [oai_citation:5‡江戸川産業ナビ](https://edogawanavi.jp/shop/600068/?utm_source=chatgpt.com)"
+},
+
+{
+text:"丸山靴下有限会社は、製造業（繊維工業）に分類される会社であった。",
+explanation:"えどがわ産業ナビでも繊維工業の製造業として紹介されています。 [oai_citation:6‡江戸川産業ナビ](https://edogawanavi.jp/shop/600068/?utm_source=chatgpt.com)"
+},
+
+{
+text:"丸山靴下有限会社は、東京都江戸川区中央に工場・事業所を構えていた。",
+explanation:"所在地は東京都江戸川区中央3丁目5番13号です。 [oai_citation:7‡江戸川産業ナビ](https://edogawanavi.jp/shop/600068/?utm_source=chatgpt.com)"
+},
+
+{
+text:"丸山靴下有限会社は、日本国内で靴下を製造していたメーカーである。",
+explanation:"東京都江戸川区で靴下を製造していました。 [oai_citation:8‡江戸川産業ナビ](https://edogawanavi.jp/shop/600068/?utm_source=chatgpt.com)"
+},
+
+{
+text:"丸山靴下有限会社は、靴下づくりを中心とした繊維メーカーであった。",
+explanation:"ファッションソックスを中心に製造していたメーカーです。 [oai_citation:9‡江戸川産業ナビ](https://edogawanavi.jp/shop/600068/?utm_source=chatgpt.com)"
+},
+
+{
 text:"丸登靴下工業（MARUTOKK）は、オリジナルブランド向けのOEM靴下製造を得意としている。",
 explanation:"正解！MARUTOKKは1934年創業の靴下メーカーで、OEM・カスタムソックスの製造を行っています。 [oai_citation:0‡丸登靴下](https://www.marutokk.jp/?utm_source=chatgpt.com)"
 },
