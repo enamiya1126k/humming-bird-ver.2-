@@ -1,6 +1,66 @@
 const TRUE_STATEMENTS = [
 
 {
+text:"株式会社ヨシダは1976年に創業した帽子メーカーである。",
+explanation:"正解！ヨシダは1976年3月21日に創業した老舗帽子メーカーです。 [oai_citation:0‡株式会社ヨシダ | 帽子のOEMから自社ブランドの製造販売](https://yoshida.company/company/?utm_source=chatgpt.com)"
+},
+
+{
+text:"株式会社ヨシダの本社は大阪府大阪市にある。",
+explanation:"正解！本社は大阪市東成区にあり、熊本県宇城市には自社工場があります。 [oai_citation:1‡株式会社ヨシダ | 帽子のOEMから自社ブランドの製造販売](https://yoshida.company/company/?utm_source=chatgpt.com)"
+},
+
+{
+text:"株式会社ヨシダの帽子づくりの中心となる工場は熊本県宇城市にある。",
+explanation:"正解！熊本工場では縫製・染色などを一貫して行っています。 [oai_citation:2‡株式会社ヨシダ | 帽子のOEMから自社ブランドの製造販売](https://yoshida.company/factory/?utm_source=chatgpt.com)"
+},
+
+{
+text:"株式会社ヨシダは帽子のOEM・ODM製造を行っている。",
+explanation:"正解！ブランド向けのOEM・ODM製造を得意としています。 [oai_citation:3‡株式会社ヨシダ | 帽子のOEMから自社ブランドの製造販売](https://yoshida.company/service/?utm_source=chatgpt.com)"
+},
+
+{
+text:"株式会社ヨシダでは自社で染色工程まで一貫して行っている。",
+explanation:"正解！帽子メーカーでは珍しく、自社染色設備を持っています。 [oai_citation:4‡株式会社ヨシダ | 帽子のOEMから自社ブランドの製造販売](https://yoshida.company/service/?utm_source=chatgpt.com)"
+},
+
+{
+text:"株式会社ヨシダでは48色もの豊富なカラーバリエーションに対応している。",
+explanation:"正解！自社染色により48色のカラーバリエーションを実現しています。 [oai_citation:5‡株式会社ヨシダ | 帽子のOEMから自社ブランドの製造販売](https://yoshida.company/service/?utm_source=chatgpt.com)"
+},
+
+{
+text:"株式会社ヨシダは布帛帽子とニット帽子の両方を製造している。",
+explanation:"正解！熊本工場には布帛帽子棟・ニット帽子棟があります。 [oai_citation:6‡株式会社ヨシダ | 帽子のOEMから自社ブランドの製造販売](https://yoshida.company/factory/?utm_source=chatgpt.com)"
+},
+
+{
+text:"株式会社ヨシダは帽子だけでなく服飾雑貨の製造・販売も行っている。",
+explanation:"正解！事業内容には帽子に加え服飾雑貨も含まれています。 [oai_citation:7‡株式会社ヨシダ | 帽子のOEMから自社ブランドの製造販売](https://yoshida.company/company/?utm_source=chatgpt.com)"
+},
+
+{
+text:"株式会社ヨシダは大阪府知事から『経営革新に関する計画』の承認を受けている。",
+explanation:"正解！2019年に大阪府知事より承認を受けています。 [oai_citation:8‡株式会社ヨシダ | 帽子のOEMから自社ブランドの製造販売](https://yoshida.company/company/?utm_source=chatgpt.com)"
+},
+
+{
+text:"株式会社ヨシダはサステナブルな取り組みとして、生地の端材を再利用した商品開発も行っている。",
+explanation:"正解！端材の再利用や廃棄物削減にも取り組んでいます。 [oai_citation:9‡株式会社ヨシダ | 帽子のOEMから自社ブランドの製造販売](https://yoshida.company/sustainable/?utm_source=chatgpt.com)"
+},
+
+{
+text:"株式会社ヨシダは熊本工場で高品質な天然素材の帽子づくりにも力を入れている。",
+explanation:"正解！素材選びから縫製・染色まで一貫して品質にこだわっています。 [oai_citation:10‡株式会社ヨシダ | 帽子のOEMから自社ブランドの製造販売](https://yoshida.company/factory/?utm_source=chatgpt.com)"
+},
+
+{
+text:"株式会社ヨシダは独自の金型を用いて、美しいシルエットの帽子づくりを行っている。",
+explanation:"正解！独自の金型が帽子の仕上がりを支える重要な技術です。 [oai_citation:11‡株式会社ヨシダ | 帽子のOEMから自社ブランドの製造販売](https://yoshida.company/service/?utm_source=chatgpt.com)"
+},
+
+{
 text:"丸登靴下工業（MARUTOKK）の本社は群馬県桐生市にある。",
 explanation:"正解！MARUTOKKは群馬県桐生市に本社を構える、日本製ソックスのOEMメーカーです。"
 },
