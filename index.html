@@ -43,7 +43,8 @@ input[type="text"]{width:100%;box-sizing:border-box;padding:13px;border-radius:1
 
 <b>❤️LIFE</b><br>
 最初は❤️LIFE×8 からスタート！<br>
-❌ 不正解：❤️LIFE -2 <br>
+❌ 選択ミス1個：❤️LIFE -1<br>
+❌ 選択ミス2個以上：❤️LIFE -2<br>
 💡 ヒント使用：❤️LIFE -1 <br>
 💀 ❤️LIFEがゼロになるとGAME OVER<br><br>
 
@@ -331,7 +332,7 @@ function showWarningIfNeeded(){
 
   if(life <= 2 && life > 0 && warningShownLife !== life){
     warningShownLife = life;
-    alert(`⚠️ WARNING\n❤️LIFE残り${life}個！\nあと1回ミスでGAME OVER！`);
+    alert(`⚠️ WARNING\n❤️LIFE残り${life}個！\n次の回答次第でGAME OVER！`);
   }
 }
 
@@ -378,21 +379,42 @@ if(isCorrect){
   }
 
 }else{
-  life -= 2;
-  if(life < 0) life = 0;
+
+  // 選ぶべき正解を選ばなかった数
+  const missedCorrectCount = correctIndexes.filter(
+    index => !selected.includes(index)
+  ).length;
+
+  // 間違った文章を選んだ数
+  const selectedWrongCount = selected.filter(
+    index => !correctIndexes.includes(index)
+  ).length;
+
+  // 合計の選択ミス数
+  const mistakeCount = missedCorrectCount + selectedWrongCount;
+
+  // 選択ミス1個なら-1、2個以上なら-2
+  const damage = mistakeCount === 1 ? 1 : 2;
+
+  life -= damage;
+
+  if(life < 0){
+    life = 0;
+  }
 
   if(life <= 0){
     gameOver = true;
+
     damageText = `
       <div style="color:#d9534f;font-size:20px;font-weight:bold;margin:12px 0;">
-        💥 ❤️LIFE -2 <br>
+        💥 選択ミス ${mistakeCount}個：❤️LIFE -${damage}<br>
         💀 LIFEがなくなりました。
       </div>
     `;
   }else{
     damageText = `
       <div style="color:#d9534f;font-size:20px;font-weight:bold;margin:12px 0;">
-        💥 ❤️LIFE -2
+        💥 選択ミス ${mistakeCount}個：❤️LIFE -${damage}
       </div>
     `;
   }
